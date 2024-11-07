@@ -8,15 +8,24 @@ class Order
     public $status = "cart";
     public $totalPrice;
     public $products = [];
+    public $adress;
 
 
     // method "__contruct()" is a magic method, created when call the class has a new one
-    public function __construct($customerName){
+    public function __construct($customerName, $adress){
         //customerName set as the propriety customerName
         $this->customerName = $customerName;
         // to set a unique ID
         $this->id = uniqid();
-
+        // to set adress
+        $this->adress = $adress;
+    }
+    //methos to change statut from paid to sent
+    public function sendOrder(){
+        //here we check if the statut is already paid and the adress exists
+        if ($this->status == "paid" && $this->adress != null) {
+            $this->status = "sent";
+        }
     }
     // function to add product, function in class is a method
     public function addProduct()
@@ -41,8 +50,7 @@ class Order
             // then, we check if Order is not empty
             if (!empty($this->products)) {
                 // take away the last product pushed in the order
-                $lastProduct = array_pop($this->products);
-
+                array_pop($this->products);
                 // totalPrice reduces by the price set for the propriety
                 $this->totalPrice -= 3;
             }
@@ -51,7 +59,7 @@ class Order
 }
 
 //example 1 : I create a new order, add 3 products and pay
-$order1 = new Order("Edouard Duron");
+$order1 = new Order("Edouard Duron", "10 Allée Louis Antoine de Bougainville 33260 La Teste de Buch");
 $order1->addProduct();
 $order1->addProduct();
 $order1->addProduct();
