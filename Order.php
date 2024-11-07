@@ -10,6 +10,14 @@ class Order
     public $products = [];
 
 
+    // method "__contruct()" is a magic method, created when call the class has a new one
+    public function __construct($customerName){
+        //customerName set as the propriety customerName
+        $this->customerName = $customerName;
+        // to set a unique ID
+        $this->id = uniqid();
+
+    }
     // function to add product, function in class is a method
     public function addProduct()
     {
@@ -43,7 +51,7 @@ class Order
 }
 
 //example 1 : I create a new order, add 3 products and pay
-$order1 = new Order();
+$order1 = new Order("Edouard Duron");
 $order1->addProduct();
 $order1->addProduct();
 $order1->addProduct();
