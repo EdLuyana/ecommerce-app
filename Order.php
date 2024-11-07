@@ -1,6 +1,8 @@
 <?php
-class Order{
 
+class Order
+{
+// variable dans une class = propriété
     public $id;
     public $customerName;
     public $status = "cart";
@@ -8,18 +10,34 @@ class Order{
     public $products = [];
 
 
-    // function to add product
-    public function addProduct(){
-        if ($this->status == "cart"){
+    // function to add product, function in class is a method
+    public function addProduct()
+    {
+        if ($this->status == "cart") {
             $this->products[] = "Pringles";
             $this->totalPrice += 3;
         }
     }
 
     //function to change order status from cart to paid
-    public function pay(){
-        if ($this->status == "cart"){
+    public function pay()
+    {
+        if ($this->status == "cart") {
             $this->status = "paid";
+        }
+    }
+
+    public function removeProduct(){
+        // We check if the status allows to change the order
+        if ($this->status == "cart") {
+            // then, we check if Order is not empty
+            if (!empty($this->products)) {
+                // take away the last product pushed in the order
+                $lastProduct = array_pop($this->products);
+
+                // totalPrice reduces by the price set for the propriety
+                $this->totalPrice -= 3;
+            }
         }
     }
 }
@@ -29,6 +47,7 @@ $order1 = new Order();
 $order1->addProduct();
 $order1->addProduct();
 $order1->addProduct();
+$order1->removeProduct();
 $order1->pay();
 
 // example 2 I create a new order, add 1 product and pay
