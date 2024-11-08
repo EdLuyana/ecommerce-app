@@ -1,134 +1,109 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 class VendorMachine
 {
-    public $snacks = [
-        0 => [
-            "name" => "Snickers",
-            "price" => 1,
-            "quantity" => 5
-        ],
-        1 => [
-            "name" => "Mars",
-            "price" => 1.5,
-            "quantity" => 5
-        ],
-        2 => [
-            "name" => "Twix",
-            "price" => 2,
-            "quantity" => 5
-        ],
-        3 => [
-            "name" => "Bounty",
-            "price" => 2.5,
-            "quantity" => 5
-        ]
-    ];
-    public $cashAmount = 0;
-    public $isOn = false;
+    public $snacks;
 
-// Method to turn on:
-    public function turnOn()
-    {
-        if ($this->isOn === false) {
-            $this->isOn = true;
+    public $cashAmount;
+
+    public $isOn;
+
+    public function __construct() {
+        $this->isOn = true;
+        $this->cashAmount = 0.00;
+        $this->snacks = [
+            [
+                "name" => "Snickers",
+                "price" => 1,
+                "quantity" => 5
+            ],
+            [
+                "name" => "Mars",
+                "price" => 1.5,
+                "quantity" => 5
+            ],
+            [
+                "name" => "Twix",
+                "price" => 2,
+                "quantity" => 5
+            ],
+            [
+                "name" => "Bounty",
+                "price" => 2.5,
+                "quantity" => 5
+            ]
+        ];
+
+    }
+
+    public function turnOn() {
+        $this->isOn = true;
+    }
+
+    public function turnOff() {
+        $currentDate = new DateTime();
+        $currentHour = $currentDate->format('H');
+
+        if ($currentHour >= 10) {
+            $this->isOn = false;
         } else {
-            throw new Exception("Meme si vous voyez ce message, la machine n'est pas allumé, tkt fais confiance");
+            throw new Exception('Vous ne pouvez pas éteindre la machine avant 18h');
         }
     }
 
-// Method to turn off:
+    public function buySnack($selectedSnack) {
+        if ($this->isOn) {
 
-    public function turnOff()
-    {
-        // Check if VendorMachine is On
-        if ($this->isOn === true) {
-            // get the current date and time
-            $currentDateTime = new DateTime();
-            // Keep only the current hour
-            $currentHour = $currentDateTime->format('H');
-
-            // check if Hour is = ou higher than 18h
-            if ($currentHour >= 18) {
-                // change isOn statement
-                $this->isOn = false;
-            }
-        } else {
-            throw new Exception("La machine est deja éteinte ou il n'est pas encore 18h");
-        }
-    }
-
-    // Method to buy a snack
-    public function buySnacks($snackName)
-    {
-        // Check if VendorMachine is On
-        if ($this->isOn === true) {
+            // on initialise une variable "flag" à false
+            $snackFound = false;
 
             foreach ($this->snacks as $index => $snack) {
-                // check if quantity and name exist
-                if ($snack["name"] === $snackName && $snack["quantity"] >= 1) {
-                    // substract quantity
-                    $this->snacks[$index]["quantity"] -= 1;
-                    // add snack's price in cashAmount
-                    $this->cashAmount += $snack["price"];
+                if ($snack['name'] === $selectedSnack) {
+
+                    if ($snack['quantity'] > 0) {
+                        $this->cashAmount += $snack['price'];
+                        $this->snacks[$index]['quantity'] -= 1;
+                    } else {
+                        throw new Exception('snack trouvé mais pas de quantité suffisante');
+                    }
+                    // si le snack a été trouvé dans la boucle,
+                    // on modifie la variable "flag"
+                    $snackFound = true;
                     break;
                 }
+
             }
-        }
 
-    }
-
-    // Method Shoot in like a potato
-    public function shootWithFoot()
-    {
-        // Check if VendorMachine is on
-        if ($this->isOn === true) {
-            // get snack's stock
-            $availableSnacks = array_filter($this->snacks, function ($snack) {
-                // return only snack's quantity over 0
-                return $snack["quantity"] > 0;
-            });
-
-            // if there are snacks
-            if (count($availableSnacks) > 0) {
-                // select randomly a snack
-                $randomSnackKey = array_rand($availableSnacks);
-                $randomSnack = $availableSnacks[$randomSnackKey];
-
-                // reduce snack's quantity by randomsnack
-                foreach ($this->snacks as $index => $snack) {
-                    if ($snack["name"] === $randomSnack["name"]) {
-                        $this->snacks[$index]["quantity"] -= 1;
-                        break;
-                    }
-                }
-
-                // generate a random var between 0 and cashAmount
-                $randomMoney = mt_rand(0, $this->cashAmount);
-                // reduce randomMoney to cashAmount
-                $this->cashAmount -= $randomMoney;
+            // après la boucle, on regarde la valeur de
+            // la variable flag
+            // et on lance une exception si le snack n'a pas été trouvé
+            if (!$snackFound) {
+                throw new Exception('snack non trouvé');
             }
+
         }
     }
+
+    public function shootWithFoot() {
+        if ($this->isOn) {
+            $randomIndex = rand(0, count($this->snacks) - 1);
+            $randomSnack = $this->snacks[$randomIndex];
+
+            if ($randomSnack['quantity'] > 0) {
+                $this->snacks[$randomIndex]['quantity'] -= 1;
+            }
+
+
+            $randomInsideCash =  rand(0, $this->cashAmount);
+            $this->cashAmount -= $randomInsideCash;
+        }
+    }
+
 }
 
-$vendorMachine1 = new VendorMachine();
-$vendorMachine1->turnOn();
-$vendorMachine1->buySnacks("Twix");
-$vendorMachine1->buySnacks("Bounty");
-$vendorMachine1->buySnacks("Bounty");
-$vendorMachine1->buySnacks("Bounty");
-$vendorMachine1->buySnacks("Bounty");
-$vendorMachine1->shootWithFoot();
-$vendorMachine1->shootWithFoot();
-$vendorMachine1->shootWithFoot();
+$vendorMachine = new VendorMachine();
+$vendorMachine->buySnack('Snickers');
+$vendorMachine->buySnack('Twix');
+$vendorMachine->buySnack('Twix');
 
-var_dump($vendorMachine1);
-
-
-
-
-
+$vendorMachine->shootWithFoot();

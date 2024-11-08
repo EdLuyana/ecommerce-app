@@ -3,12 +3,12 @@
 class Order
 {
 // variable dans une class = propriété
-    public $id;
-    public $customerName;
-    public $status = "cart";
-    public $totalPrice;
-    public $products = [];
-    public $shippingAddress;
+    private $id;
+    private $customerName;
+    private $status = "cart";
+    private $totalPrice;
+    private $products = [];
+    private $shippingAddress;
 
 
     // method "__contruct()" is a magic method, created when call the class has a new one
