@@ -33,7 +33,7 @@ class VendorMachine
 // Method to turn on:
     public function turnOn()
     {
-        if ($this->isOn == false) {
+        if ($this->isOn === false) {
             $this->isOn = true;
         } else {
             throw new Exception("Meme si vous voyez ce message, la machine n'est pas allumé, tkt fais confiance");
@@ -45,7 +45,7 @@ class VendorMachine
     public function turnOff()
     {
         // Check if VendorMachine is On
-        if ($this->isOn == true) {
+        if ($this->isOn === true) {
             // get the current date and time
             $currentDateTime = new DateTime();
             // Keep only the current hour
@@ -65,18 +65,16 @@ class VendorMachine
     public function buySnacks($snackName)
     {
         // Check if VendorMachine is On
-        if ($this->isOn == true) {
+        if ($this->isOn === true) {
 
             foreach ($this->snacks as $index => $snack) {
                 // check if quantity and name exist
-                if ($snack["name"] == $snackName && $snack["quantity"] >= 1) {
+                if ($snack["name"] === $snackName && $snack["quantity"] >= 1) {
                     // substract quantity
                     $this->snacks[$index]["quantity"] -= 1;
                     // add snack's price in cashAmount
                     $this->cashAmount += $snack["price"];
                     break;
-                } else {
-                    throw new Exception("Il n'y a plus de {$snackName} dans cette machine");
                 }
             }
         }
@@ -87,7 +85,7 @@ class VendorMachine
     public function shootWithFoot()
     {
         // Check if VendorMachine is on
-        if ($this->isOn == true) {
+        if ($this->isOn === true) {
             // get snack's stock
             $availableSnacks = array_filter($this->snacks, function ($snack) {
                 // return only snack's quantity over 0
@@ -101,9 +99,9 @@ class VendorMachine
                 $randomSnack = $availableSnacks[$randomSnackKey];
 
                 // reduce snack's quantity by randomsnack
-                foreach ($this->snacks as &$snack) {
-                    if ($snack["name"] == $randomSnack["name"]) {
-                        $snack["quantity"] -= 1;
+                foreach ($this->snacks as $index => $snack) {
+                    if ($snack["name"] === $randomSnack["name"]) {
+                        $this->snacks[$index]["quantity"] -= 1;
                         break;
                     }
                 }
