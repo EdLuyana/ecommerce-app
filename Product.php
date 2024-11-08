@@ -1,10 +1,10 @@
 <?php
 
 class Product {
-    private $id ;
+    protected $id ;
     protected $price ;
     protected $title ;
-    protected $shippingCost;
+    private $shippingCost;
 
     public function buy(){
         echo "ici ça achete";
